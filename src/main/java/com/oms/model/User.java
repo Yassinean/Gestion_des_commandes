@@ -3,6 +3,8 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,6 +28,9 @@ public class User{
 	private String email;
 	@Column(name="password" ,nullable = false)
 	private String motDePasse;
+	@Column(name = "userType",nullable = false)
+	@Enumerated(EnumType.STRING)
+	private role userType;
 	
 	public User(int id, String nom, String prenom, String email, String motDePasse) {
 		super();
