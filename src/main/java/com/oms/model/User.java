@@ -21,7 +21,6 @@ public class User{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	
 	private String nom;
 	private String prenom;
 	@Column(name="email" ,nullable = false)
@@ -96,6 +95,15 @@ public class User{
 	}
 	public boolean checkPassword (String password) {
 		return BCrypt.checkpw(password, this.motDePasse);
+	}
+	
+
+	public role getUserType() {
+		return userType;
+	}
+
+	public void setUserType(role userType) {
+		this.userType = userType;
 	}
 
 	@Override

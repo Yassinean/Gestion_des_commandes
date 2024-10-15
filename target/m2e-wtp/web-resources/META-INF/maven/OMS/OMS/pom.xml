@@ -59,7 +59,6 @@
     </dependency>
     <!-- https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api -->
    
-    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
    
     <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
     <dependency>
@@ -82,26 +81,22 @@
              <version>2.2</version>
          </dependency>
 
-         <!-- MySQL Connector dependency -->
-         <dependency>
-             <groupId>mysql</groupId>
-             <artifactId>mysql-connector-java</artifactId>
-             <version>8.0.32</version>
-         </dependency>
-         
+         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+			<dependency>
+			    <groupId>org.postgresql</groupId>
+			    <artifactId>postgresql</artifactId>
+			    <version>42.7.3</version>
+			</dependency>
            <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>5.4.30.Final</version> <!-- or the version you are using -->
-    </dependency>
-<dependency>
-    <groupId>org.mindrot</groupId>
-    <artifactId>jbcrypt</artifactId>
-    <version>0.4</version>
-</dependency>
-
-
-
+		        <groupId>org.hibernate</groupId>
+		        <artifactId>hibernate-entitymanager</artifactId>
+		        <version>5.4.30.Final</version>
+    		</dependency>
+			<dependency>
+			    <groupId>org.mindrot</groupId>
+			    <artifactId>jbcrypt</artifactId>
+			    <version>0.4</version>
+			</dependency>
   </dependencies>
   <build>
     <plugins>
