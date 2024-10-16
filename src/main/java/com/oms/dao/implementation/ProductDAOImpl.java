@@ -10,12 +10,11 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class ProductDAOImpl implements ProductDAO {
-
-	EntityManager em = PersistenceUtil.getEntityManager();
-	EntityTransaction et = em.getTransaction();
 	
 	@Override
 	public Product saveProduct(Product product) {
+		EntityManager em = PersistenceUtil.getEntityManager();
+		EntityTransaction et = em.getTransaction();
 		try {
 			et.begin();
 			em.persist(product);
@@ -35,6 +34,8 @@ public class ProductDAOImpl implements ProductDAO {
 
 	@Override
 	public void updateProduct(int id, Product product) {
+		EntityManager em = PersistenceUtil.getEntityManager();
+		EntityTransaction et = em.getTransaction();
 		try {
 			et.begin();
 			Product existProduct = em.find(Product.class, product.getId());
@@ -60,6 +61,8 @@ public class ProductDAOImpl implements ProductDAO {
 
 	@Override
 	public void deleteProduct(int id) {
+		EntityManager em = PersistenceUtil.getEntityManager();
+		EntityTransaction et = em.getTransaction();
 		try {
 			et.begin();
 			Product product = em.find(Product.class,id);
@@ -80,6 +83,7 @@ public class ProductDAOImpl implements ProductDAO {
 
 	@Override
 	public Product findProduct(int id) {
+		EntityManager em = PersistenceUtil.getEntityManager();
 		Product product = null;
 		try {
 			product = em.find(Product.class, id);
@@ -94,6 +98,7 @@ public class ProductDAOImpl implements ProductDAO {
 
 	@Override
 	public List<Product> listProducts() {
+		EntityManager em = PersistenceUtil.getEntityManager();
 		List<Product> products = null;
 		try {
 			TypedQuery<Product> jpql = em.createQuery("SELECT p FROM Product p",Product.class);
@@ -103,6 +108,7 @@ public class ProductDAOImpl implements ProductDAO {
 		}finally {
 			em.close();
 		}
+		System.out.println("pros => "+products);
 		return products;
 	}
 	

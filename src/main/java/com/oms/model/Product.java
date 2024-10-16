@@ -6,12 +6,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "produits")
+@Table(name = "products")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @NotNull
     @Size(min = 1, max = 100)
@@ -37,7 +37,7 @@ public class Product {
 		this.stock = stock;
 	}
     
-	public Product(Long id, String name, String description, Double price, Integer stock) {
+	public Product(int id, String name, String description, Double price, Integer stock) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -46,12 +46,12 @@ public class Product {
 	}
 
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
