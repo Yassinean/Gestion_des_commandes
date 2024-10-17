@@ -19,18 +19,19 @@
             <button class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
                 Search
             </button>
+             <a th:href="@{/products}" class="mx-2 bg-blue-600 text-white px-4 py-2 rounded text-center inline-block">All</a>
         </form>
-        <div th:if="${message}" class="text-center text-red-500 mt-4">
+        <div th:if="${error}" class="text-center text-red-500 mt-4">
+            <p th:text="${error}"></p>
+        </div>
+        <div th:if="${message}" class="text-center text-green-500 mt-4">
             <p th:text="${message}"></p>
         </div>
 
-        <!-- Add New Product Button -->
         <button class="mb-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                data-bs-toggle="modal" data-bs-target="#productModal" 
-                onclick="openNewProductModal()">
-            Add New Product
-        </button>
-
+		        onclick="openNewProductModal()">
+		    Add New Product
+		</button>
         <!-- Product Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div th:each="product : ${products}" 
@@ -71,7 +72,7 @@
         </nav>
     </div>
 
-    <!-- Product Modal -->
+    <!--	 Modal -->
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" 
          id="productModal">
         <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
@@ -81,23 +82,27 @@
                 <input type="hidden" name="action" id="productAction" value="insert">
 
                 <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium">Name</label>
-                    <input type="text" id="name" name="name" class="mt-1 w-full border rounded-lg px-3 py-2" required>
-                </div>
+				    <label for="name" class="block text-sm font-medium">Name</label>
+				    <input type="text" id="name" name="name" class="mt-1 w-full border rounded-lg px-3 py-2" required>
+				    <p id="nameError" class="text-red-500 text-sm mt-1 hidden"></p>
+				</div>
 
                 <div class="mb-4">
                     <label for="description" class="block text-sm font-medium">Description</label>
                     <textarea id="description" name="description" class="mt-1 w-full border rounded-lg px-3 py-2"></textarea>
+                    <p id="descError" class="text-red-500 text-sm mt-1 hidden"></p>
                 </div>
 
                 <div class="mb-4">
                     <label for="price" class="block text-sm font-medium">Price</label>
-                    <input type="number" id="price" name="price" step="0.01" class="mt-1 w-full border rounded-lg px-3 py-2" required>
+                    <input type="number" id="price" name="price" step="0.1" class="mt-1 w-full border rounded-lg px-3 py-2" required>
+                    <p id="priceError" class="text-red-500 text-sm mt-1 hidden"></p>
                 </div>
 
                 <div class="mb-4">
                     <label for="stock" class="block text-sm font-medium">Stock</label>
                     <input type="number" id="stock" name="stock" class="mt-1 w-full border rounded-lg px-3 py-2" required>
+                    <p id="stockError" class="text-red-500 text-sm mt-1 hidden"></p>
                 </div>
 
                 <div class="flex justify-end space-x-2">
@@ -136,33 +141,52 @@
         }
 
         document.getElementById('productForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let error = false;
+
+            const nameError = document.getElementById('nameError');
+            nameError.textContent = '';
+            const descError = document.getElementById('descError');
+            descError.textContent = '';
+            const priceError = document.getElementById('priceError');
+            priceError.textContent = '';
+            const stockError = document.getElementById('stockError');
+            stockError.textContent = '';
+
             const nameInput = document.querySelector('input[name="name"]');
-            const priceInput = document.querySelector('input[name="price"]');
-            const stockInput = document.querySelector('input[name="stock"]');
-
-            let errorMessage = "";
-
-            // Validate product name
             if (!nameInput.value || nameInput.value.length < 3) {
-                errorMessage += "Product name must be at least 3 characters long.\n";
+                nameError.textContent = "Product name must be at least 3 characters long.";
+                nameError.classList.remove('hidden');
+                error = true;
             }
 
-            // Validate price
+           
+            const descInput = document.querySelector('textarea[name="description"]');
+            if (!descInput.value || descInput.value.length < 3) {
+                descError.textContent = "Product description must be at least 3 characters long.";
+                descError.classList.remove('hidden');
+                error = true;
+            }
+
+            const priceInput = document.querySelector('input[name="price"]');
             if (!priceInput.value || priceInput.value <= 0) {
-                errorMessage += "Price must be greater than 0.\n";
+                priceError.textContent = "Price must be greater than 0.";
+                priceError.classList.remove('hidden');
+                error = true;
             }
 
-            // Validate stock
+            const stockInput = document.querySelector('input[name="stock"]');
             if (!stockInput.value || stockInput.value < 0) {
-                errorMessage += "Stock cannot be negative.\n";
+                stockError.textContent = "Stock cannot be negative.";
+                stockError.classList.remove('hidden');
+                error = true;
             }
 
-            // If there are any error messages, prevent form submission and alert the user
-            if (errorMessage) {
-                e.preventDefault();
-                alert(errorMessage.trim());
+            if (!error) {
+                e.target.submit();
             }
         });
+
     </script>
 </body>
 </html>

@@ -61,21 +61,21 @@ public class ProductController extends HttpServlet {
     private void listProducts(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     	  int page = 1;
-    	    int pageSize = 5;  // Products per page
+    	    int pageSize = 6;
 
     	    String pageParam = request.getParameter("page");
     	    if (pageParam != null && !pageParam.isEmpty()) {
     	        page = Integer.parseInt(pageParam);
     	    }
 
-    	    int totalProducts = productService.getTotalProductCount();  // Total product count for pagination
+    	    int totalProducts = productService.getTotalProductCount();
     	    boolean paginationNeeded = totalProducts > pageSize;
 
     	    List<Product> products;
     	    if (paginationNeeded) {
-    	        products = productService.listProducts(page, pageSize);  // Fetch paginated products
+    	        products = productService.listProducts(page, pageSize);
     	    } else {
-    	        products = productService.listProducts(1, totalProducts);  // Fetch all products if pagination not needed
+    	        products = productService.listProducts(1, totalProducts);
     	    }
 
     	    request.setAttribute("products", products);
@@ -88,10 +88,10 @@ public class ProductController extends HttpServlet {
     
     private void searchProducts(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        String name = request.getParameter("name");
+        String name = request.getParameter("search");
         List<Product> products = productService.searchProducts(name);
         if (products.isEmpty()) {
-            request.setAttribute("message", "Product not found");
+            request.setAttribute("error", "Product not found");
         }
         
         request.setAttribute("products", products);
@@ -108,7 +108,11 @@ public class ProductController extends HttpServlet {
 
         Product newProduct = new Product(name, description, price, stock);
         productService.saveProduct(newProduct);
-
+        
+        if (newProduct != null) {
+        	request.getSession().setAttribute("message", "Product added successfully !");
+        }
+        
         response.sendRedirect("products?action=list");
     }
 
@@ -123,6 +127,10 @@ public class ProductController extends HttpServlet {
 
         Product updatedProduct = new Product(id, name, description, price, stock);
         productService.updateProduct(id, updatedProduct);
+        
+        if (updatedProduct != null) {
+        	request.getSession().setAttribute("message", "Product updated successfully !");
+        }
 
         response.sendRedirect("products?action=list");
     }
@@ -132,7 +140,7 @@ public class ProductController extends HttpServlet {
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         productService.deleteProduct(id);
-
+        request.getSession().setAttribute("message", "Product deleted successfully !");
         response.sendRedirect("products?action=list");
     }
 }

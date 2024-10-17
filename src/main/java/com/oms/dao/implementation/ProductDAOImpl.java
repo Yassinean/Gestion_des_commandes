@@ -107,7 +107,7 @@ public class ProductDAOImpl implements ProductDAO {
 	    EntityManager em = PersistenceUtil.getEntityManager();
 	    List<Product> products = null;
 	    try {
-	        TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p", Product.class);
+	        TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p ORDER BY p.id DESC", Product.class);
 	        query.setFirstResult((page - 1) * size);  // Offset calculation
 	        query.setMaxResults(size);  // Limit the result set size
 	        products = query.getResultList();
@@ -152,4 +152,9 @@ public class ProductDAOImpl implements ProductDAO {
 	    return count;
 	}
 	
+	@Override
+	public List<Product> listProductsSortedByPrice() {
+		List<Product> products = null;
+		return products;
+	}
 }

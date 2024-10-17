@@ -1,5 +1,6 @@
 package com.oms.service;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.oms.dao.Interface.ProductDAO;
@@ -40,5 +41,12 @@ public class ProductService{
 	
     public int getTotalProductCount() {
         return productDAO.getTotalProductCount();
+    }
+    
+    public List<Product> listProductsSortedByPrice() {
+        return productDAO.listProducts(1, getTotalProductCount())
+                         .stream()
+                         .sorted(Comparator.comparingDouble(Product::getPrice))
+                         .toList();
     }
 }
