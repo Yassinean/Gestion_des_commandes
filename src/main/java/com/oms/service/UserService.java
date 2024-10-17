@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import com.oms.dao.Interface.UserDAO;
 import com.oms.dao.implementation.UserDAOImpl;
-import com.oms.model.User;
+import com.oms.model.Admin;
+import com.oms.model.Client;
 
 public class UserService {
     private UserDAO userDAO;
@@ -14,25 +15,43 @@ public class UserService {
         this.userDAO = new UserDAOImpl(); 
     }
 
-    public boolean createUser(User user) {
-        return userDAO.create(user);
+    public boolean createClient(Client client) {
+        return userDAO.createClient(client);
     }
 
-    public boolean updateUser(User user) {
-        return userDAO.update(user);
+    public boolean updateClient(Client client) {
+        return userDAO.updateClient(client);
     }
 
-    public boolean deleteUser(int id) {
-        return userDAO.delete(id);
+    public boolean deleteClient(int id) {
+        return userDAO.deleteClient(id);
     }
 
-    public Optional<User> getUserById(int id) {
-        return userDAO.getById(id);
+    public Optional<Client> getClientById(int id) {
+        return userDAO.getClientById(id);
     }
 
-    public List<User> getAllUsers() {
-        return userDAO.getAll();
+    public List<Client> getAllClients() {
+        return userDAO.getAllClients();
+    }
+    public boolean createAdmin(Admin admin) {
+        return userDAO.createAdmin(admin);
     }
 
+    public boolean updateAdmin(Admin admin) {
+        return userDAO.updateAdmin(admin);
+    }
+
+    public boolean deleteAdmin(int id) {
+        return userDAO.deleteAdmin(id);
+    }
+
+    public Optional<Admin> getAdminById(int id) {
+        return userDAO.getAdminById(id);
+    }
+
+    public List<Admin> getAllAdmins() {
+        return userDAO.getAllAdmins();
+    }
   
 }

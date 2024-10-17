@@ -5,6 +5,13 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   
+	<properties>
+	    <maven.compiler.source>1.8</maven.compiler.source>
+	    <maven.compiler.target>1.8</maven.compiler.target>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+  
    <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -12,12 +19,7 @@
       <version>1.2</version>
     </dependency>    
         
-    <dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>jstl</artifactId>
-    <version>1.2</version>    
-	</dependency>
-
+ 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -90,17 +92,11 @@
 			    <artifactId>jbcrypt</artifactId>
 			    <version>0.4</version>
 			</dependency>
-		<dependency>
-        <groupId>org.thymeleaf</groupId>
-        <artifactId>thymeleaf</artifactId>
-        <version>3.0.12.RELEASE</version>
-    </dependency>
-  <dependency>
-        <groupId>org.thymeleaf</groupId>
-        <artifactId>thymeleaf-spring5</artifactId>
-        <version>3.0.12.RELEASE</version> <!-- Adjust to the version you need -->
-    </dependency>
-    <!-- Thymeleaf Servlet Integration Dependency -->
+	<dependency>
+<groupId>org.thymeleaf</groupId>
+<artifactId>thymeleaf</artifactId>
+<version>3.0.11.RELEASE</version>
+</dependency>
     
     <!-- Servlet API -->
     <dependency>
@@ -109,8 +105,6 @@
         <version>3.1.0</version> <!-- Version appropriée pour votre projet -->
         <scope>provided</scope>
     </dependency>
-
-
 
   </dependencies>
   <build>
