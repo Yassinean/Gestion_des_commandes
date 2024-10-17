@@ -31,10 +31,10 @@
 			        <td th:text="${product.stock}"></td>
 			        <td>
 			            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#productModal"
-			                    onclick="openEditProductModal('[[${product.id}]]', '[[${product.name}]]', '[[${product.description}]]', '[[${product.price}]]', '[[${product.stock}]]')">
-			                Edit
-			            </button>
-			            <a th:href="@{/products(action='delete', id=${product.id})}" class="btn btn-danger">Delete</a>
+	                           onclick="openEditProductModal([[${product.id}]], '[[${product.name}]]', '[[${product.description}]]', [[${product.price}]], [[${product.stock}]])">
+	                       Edit
+	                   </button>
+		            	<a th:href="@{/products(action='delete', id=${product.id})}" class="btn btn-danger">Delete</a>
 			        </td>
 			    </tr>
 			</tbody>

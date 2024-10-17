@@ -14,5 +14,13 @@
         <servlet-name>ProductController</servlet-name>
         <url-pattern>/products</url-pattern>
     </servlet-mapping>
-
-  </web-app>
+	<servlet>
+	    <servlet-name>UserController</servlet-name>
+	    <servlet-class>com.oms.controller.UserController</servlet-class>
+	</servlet>
+		
+	<servlet-mapping>
+	    <servlet-name>UserController</servlet-name>
+	    <url-pattern>/user</url-pattern>
+	</servlet-mapping>
+</web-app>
