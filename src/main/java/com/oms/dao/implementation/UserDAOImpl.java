@@ -62,7 +62,7 @@ public class UserDAOImpl implements UserDAO  {
     @Override
     public List<Client> getAllClients() {
         List<Client> clients = new ArrayList<>();       
-        clients.addAll(em.createQuery("SELECT a FROM Client a", Client.class).getResultList());                
+        clients.addAll(em.createQuery("SELECT a FROM Client a ORDER BY a.id ASC", Client.class).getResultList());                
         return clients;
     }
     

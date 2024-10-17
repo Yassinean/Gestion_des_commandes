@@ -73,6 +73,7 @@ public class ClientController extends HttpServlet {
                 	insertClient(request, response);
                     break;
                 case "/updateClient":
+                	updateClient(request, response);
                     break;
                 default:
                     response.sendRedirect(request.getContextPath() + "/client");
@@ -85,21 +86,22 @@ public class ClientController extends HttpServlet {
     private void listClients(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            List<Client> clients = userService.getAllClients();
+        	  List<Client> clients = userService.getAllClients();
+              System.out.println("les admins : " +clients);
+              WebContext context = new WebContext(
+                  request, 
+                  response, 
+                  getServletContext(), 
+                  request.getLocale()
+              );
+              context.setVariable("clients", clients);
+              response.setContentType("text/html;charset=UTF-8");
+              templateEngine.process("users/client", context, response.getWriter());
 
-            WebContext context = new WebContext(
-                request, 
-                response, 
-                getServletContext(), 
-                request.getLocale()
-            );
-            context.setVariable("clients", clients);
-            response.setContentType("text/html;charset=UTF-8");
-            templateEngine.process("users/client", context, response.getWriter());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+          } catch (Exception e) {
+              e.printStackTrace();
+              response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to fetch clients.");
+          }
     }
     private void insertClient(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String name = request.getParameter("name");
@@ -127,14 +129,43 @@ public class ClientController extends HttpServlet {
         }
     }
     
+    private void updateClient(HttpServletRequest request , HttpServletResponse response)
+    	    throws ServletException , IOException {
+    	    	int clientId = Integer.parseInt(request.getParameter("clientUpdate"));
+    	    	String nom = request.getParameter("nom");
+    	        String prenom = request.getParameter("prenom");
+    	        String email = request.getParameter("email");
+    	        String motDePasse = request.getParameter("password");
+    	        String adresse = request.getParameter("adresse");
+    	        double moyen = Double.parseDouble(request.getParameter("moyen"));
+    	        
+    	        Client client = new Client();
+    	        client.setId(clientId);
+    	        client.setNom(nom);
+    	        client.setPrenom(prenom);
+    	        client.setEmail(email);
+    	        client.setMotDePasse(motDePasse);
+    	        client.setAdresse(adresse);
+    	        client.setMoyenPaiment(moyen);
+    	        
+    	        boolean isUpdated = userService.updateClient(client);
+    	        
+    	        if (isUpdated) {
+    	            response.sendRedirect("client");
+    	        } else {
+    	            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"Failed to update Client.");
+    	        }
+    	    }
+
+    
     private void deleteClient(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            int id = Integer.parseInt(request.getParameter("id"));
+            int id = Integer.parseInt(request.getParameter("clientDelete"));
             boolean isDeleted = userService.deleteClient(id);
 
             if (isDeleted) {
-                response.sendRedirect(request.getContextPath() + "/client");
+                response.sendRedirect("client");
             }else {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to delete client.");
             }
