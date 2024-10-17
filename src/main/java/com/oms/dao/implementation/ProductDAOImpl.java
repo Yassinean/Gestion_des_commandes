@@ -7,9 +7,15 @@ import com.oms.util.PersistenceUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.util.List;
 
 public class ProductDAOImpl implements ProductDAO {
+	
+	private static final Logger LOGGER = Logger.getLogger(ProductDAOImpl.class.getName());
 	
 	@Override
 	public Product saveProduct(Product product) {
@@ -23,7 +29,7 @@ public class ProductDAOImpl implements ProductDAO {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			e.printStackTrace();
+			  LOGGER.log(Level.SEVERE, "Error saving product", e);
 			return null;
 		}finally {
 			em.close();
@@ -52,7 +58,7 @@ public class ProductDAOImpl implements ProductDAO {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			e.printStackTrace();
+			 LOGGER.log(Level.SEVERE, "Error updating product", e);
 		}finally {
 			em.close();
 		}
@@ -74,7 +80,7 @@ public class ProductDAOImpl implements ProductDAO {
 			if(et.isActive()) {
 				et.rollback();
 			}
-			e.printStackTrace();
+			 LOGGER.log(Level.SEVERE, "Error deleting product", e);
 		}finally {
 			em.close();
 		}
@@ -88,7 +94,7 @@ public class ProductDAOImpl implements ProductDAO {
 		try {
 			product = em.find(Product.class, id);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Error finding product", e);
 		}
 		finally {
 			em.close();
@@ -106,7 +112,7 @@ public class ProductDAOImpl implements ProductDAO {
 	        query.setMaxResults(size);  // Limit the result set size
 	        products = query.getResultList();
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	        LOGGER.log(Level.SEVERE, "Error listing products", e);
 	    } finally {
 	        em.close();
 	    }
@@ -123,7 +129,7 @@ public class ProductDAOImpl implements ProductDAO {
 	        query.setParameter("name", "%" + name + "%");
 	        products = query.getResultList();
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	        LOGGER.log(Level.SEVERE, "Error searching products", e);
 	    } finally {
 	        em.close();
 	    }
@@ -138,7 +144,8 @@ public class ProductDAOImpl implements ProductDAO {
 	        TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Product p", Long.class);
 	        count = query.getSingleResult().intValue();
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	    	  LOGGER.log(Level.SEVERE, "Error getting total product count", e);
+	           return 0;
 	    } finally {
 	        em.close();
 	    }

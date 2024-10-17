@@ -10,9 +10,9 @@ public class ProductService{
 	
 	private final ProductDAO productDAO;
 	
-	public ProductService() {
-		productDAO = new ProductDAOImpl();
-	}
+	  public ProductService(ProductDAO productDAO) {
+	        this.productDAO = productDAO;
+	    }
 	
 	public Product saveProduct(Product product) {
 		return productDAO.saveProduct(product);
@@ -37,4 +37,8 @@ public class ProductService{
 	public List<Product> searchProducts(String name){
 		return productDAO.searchProducts(name);
 	}
+	
+    public int getTotalProductCount() {
+        return productDAO.getTotalProductCount();
+    }
 }
