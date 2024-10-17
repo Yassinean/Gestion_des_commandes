@@ -83,7 +83,7 @@ public class ProductController extends HttpServlet {
     	    request.setAttribute("currentPage", page);
     	    request.setAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize));
 
-    	    thymeleafUtil.returnView(request, response, "product-list", null);
+    	    thymeleafUtil.returnView(request, response, "products/product-list", null);
     	}
     
     private void searchProducts(HttpServletRequest request, HttpServletResponse response) 
@@ -95,7 +95,7 @@ public class ProductController extends HttpServlet {
         }
         
         request.setAttribute("products", products);
-        thymeleafUtil.returnView(request, response, "product-list", null);
+        thymeleafUtil.returnView(request, response, "products/product-list", null);
     }
 
    
