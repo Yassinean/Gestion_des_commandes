@@ -11,5 +11,7 @@ public interface ProductDAO {
 	void updateProduct(int id,Product product);
 	void deleteProduct(int id);
 	Product findProduct(int id);
-	List<Product> listProducts();
+	List<Product> listProducts(int page, int size);
+	List<Product> searchProducts(String name);
+	int getTotalProductCount();
 }

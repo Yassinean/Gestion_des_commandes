@@ -97,20 +97,52 @@ public class ProductDAOImpl implements ProductDAO {
 	}
 
 	@Override
-	public List<Product> listProducts() {
-		EntityManager em = PersistenceUtil.getEntityManager();
-		List<Product> products = null;
-		try {
-			TypedQuery<Product> jpql = em.createQuery("SELECT p FROM Product p",Product.class);
-			products = jpql.getResultList();
-		}catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			em.close();
-		}
-		System.out.println("pros => "+products);
-		return products;
+	public List<Product> listProducts(int page, int size) {
+	    EntityManager em = PersistenceUtil.getEntityManager();
+	    List<Product> products = null;
+	    try {
+	        TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p", Product.class);
+	        query.setFirstResult((page - 1) * size);  // Offset calculation
+	        query.setMaxResults(size);  // Limit the result set size
+	        products = query.getResultList();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        em.close();
+	    }
+	    return products;
+	}
+
+	@Override
+	public List<Product> searchProducts(String name) {
+	    EntityManager em = PersistenceUtil.getEntityManager();
+	    List<Product> products = null;
+	    try {
+	        TypedQuery<Product> query = em.createQuery(
+	            "SELECT p FROM Product p WHERE p.name LIKE :name", Product.class);
+	        query.setParameter("name", "%" + name + "%");
+	        products = query.getResultList();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        em.close();
+	    }
+	    return products;
 	}
 	
+	@Override
+	public int getTotalProductCount() {
+	    EntityManager em = PersistenceUtil.getEntityManager();
+	    int count = 0;
+	    try {
+	        TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Product p", Long.class);
+	        count = query.getSingleResult().intValue();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        em.close();
+	    }
+	    return count;
+	}
 	
 }

@@ -35,6 +35,9 @@ public class ProductController extends HttpServlet {
             case "list":
                 listProducts(request, response);
                 break;
+            case "search":
+                searchProducts(request, response);
+                break;
             case "delete":
                 deleteProduct(request, response);
                 break;
@@ -54,17 +57,45 @@ public class ProductController extends HttpServlet {
         }
     }
 
-    // List all products and forward to the Thymeleaf template
+   
+
     private void listProducts(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        List<Product> products = productDAO.listProducts();
-        request.setAttribute("products", products);
+    	 int page = 1;
+    	    int pageSize = 5;  // Products per page
 
-        // Use ThymeleafUtil to process the template
+    	    String pageParam = request.getParameter("page");
+    	    if (pageParam != null && !pageParam.isEmpty()) {
+    	        page = Integer.parseInt(pageParam);
+    	    }
+
+    	    int totalProducts = productDAO.getTotalProductCount();  // Total product count for pagination
+    	    boolean paginationNeeded = totalProducts > pageSize;
+
+    	    List<Product> products;
+    	    if (paginationNeeded) {
+    	        products = productDAO.listProducts(page, pageSize);  // Fetch paginated products
+    	    } else {
+    	        products = productDAO.listProducts(1, totalProducts);  // Fetch all products if pagination not needed
+    	    }
+
+    	    request.setAttribute("products", products);
+    	    request.setAttribute("paginationNeeded", paginationNeeded);
+    	    request.setAttribute("currentPage", page);
+    	    request.setAttribute("totalPages", (int) Math.ceil((double) totalProducts / pageSize));
+
+    	    thymeleafUtil.returnView(request, response, "product-list", null);
+    }
+
+    private void searchProducts(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String name = request.getParameter("name");
+        List<Product> products = productDAO.searchProducts(name);
+        request.setAttribute("products", products);
         thymeleafUtil.returnView(request, response, "product-list", null);
     }
 
-    // Insert a new product into the database
+   
     private void insertProduct(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
         String name = request.getParameter("name");
@@ -78,7 +109,7 @@ public class ProductController extends HttpServlet {
         response.sendRedirect("products?action=list");
     }
 
-    // Update an existing product in the database
+  
     private void updateProduct(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -93,7 +124,7 @@ public class ProductController extends HttpServlet {
         response.sendRedirect("products?action=list");
     }
 
-    // Delete a product from the database
+  
     private void deleteProduct(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));

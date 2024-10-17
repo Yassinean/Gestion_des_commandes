@@ -9,7 +9,12 @@
 <body>
 	<div class="container mt-5">
 	    <h2>Product List</h2>
-	    <h1></h1>
+	     <!-- Search Bar -->
+	    <form class="d-flex mb-3" th:action="@{/products}" method="get">
+	        <input type="hidden" name="action" value="search">
+	        <input class="form-control me-2" type="search" name="name" placeholder="Search by name" aria-label="Search">
+	        <button class="btn btn-outline-success" type="submit">Search</button>
+	    </form>
 	    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal" onclick="openNewProductModal()">Add New Product</button>
 	    <table class="table table-bordered mt-3">
 	        <thead>
@@ -39,6 +44,21 @@
 			    </tr>
 			</tbody>
 	    </table>
+	   <!-- Pagination controls -->
+	   <nav th:if="${paginationNeeded}">
+	       <ul class="pagination justify-content-center">
+	           <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+	               <a class="page-link" th:href="@{/products(page=${currentPage - 1})}">Previous</a>
+	           </li>
+	           <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
+	               th:classappend="${page == currentPage} ? 'active'">
+	               <a class="page-link" th:href="@{/products(page=${page})}" th:text="${page}"></a>
+	           </li>
+	           <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+	               <a class="page-link" th:href="@{/products(page=${currentPage + 1})}">Next</a>
+	           </li>
+	       </ul>
+	   </nav>
 	</div>
 
 	<!-- Product Modal -->

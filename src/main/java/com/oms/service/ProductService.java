@@ -30,7 +30,11 @@ public class ProductService{
 		return productDAO.findProduct(id);
 	}
 	
-	public List<Product> listProducts(){
-		return productDAO.listProducts();
+	public List<Product> listProducts(int page , int size){
+		return productDAO.listProducts(page,size);
+	}
+	
+	public List<Product> searchProducts(String name){
+		return productDAO.searchProducts(name);
 	}
 }
