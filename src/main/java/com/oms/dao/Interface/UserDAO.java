@@ -28,6 +28,8 @@ public interface UserDAO{
 	    Optional<Admin> getAdminById(int id);
 
 	    Optional<Client> getClientById(int id);
+	    List<Admin> searchAdmin(String searchTerm);
+	    List<Client> searchClient(String searchTerm);
 
 
 }

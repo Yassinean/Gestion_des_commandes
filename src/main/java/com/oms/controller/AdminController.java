@@ -2,7 +2,9 @@ package com.oms.controller;
 
 import org.thymeleaf.context.WebContext;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,6 +54,9 @@ public class AdminController extends HttpServlet {
                 case "/deleteAdmin":
                     deleteAdmin(request, response);
                     break;
+                case "/search":
+                	adminSearch(request, response);
+                    break;    
                 default:
                     response.sendRedirect(request.getContextPath() + "/admin");
                     break;
@@ -85,26 +90,48 @@ public class AdminController extends HttpServlet {
         }
     }
 
-    private void listAdmins(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            List<Admin> admins = userService.getAllAdmins();
-            System.out.println("les admins : " +admins);
-            WebContext context = new WebContext(
-                request, 
-                response, 
-                getServletContext(), 
-                request.getLocale()
-            );
-            context.setVariable("admins", admins);
-            response.setContentType("text/html;charset=UTF-8");
-            templateEngine.process("users/admin", context, response.getWriter());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to fetch admins.");
-        }
-    }
+    private void listAdmins(HttpServletRequest request, HttpServletResponse response) 
+    		throws ServletException, IOException {
+    		    try {
+    		        int currentPage = 1;
+    		        int pageSize = 6; 
+    		        
+    		        String pageParam = request.getParameter("page");
+    		        if (pageParam != null && !pageParam.isEmpty()) {
+    		            currentPage = Integer.parseInt(pageParam);
+    		        }
+    		        
+    		        List<Admin> allAdmins = userService.getAllAdmins();
+    		        int totalAdmins = allAdmins.size();
+    		        
+    		        int totalPages = (int) Math.ceil((double) totalAdmins / pageSize);
+    		        
+    		        int startIndex = (currentPage - 1) * pageSize;
+    		        int endIndex = Math.min(startIndex + pageSize, totalAdmins);
+    		        
+    		        List<Admin> currentPageAdmins = allAdmins.subList(startIndex, endIndex);
+    		        
+    		        WebContext context = new WebContext(
+    		            request,
+    		            response,
+    		            getServletContext(),
+    		            request.getLocale()
+    		        );
+    		        
+    		        context.setVariable("admins", currentPageAdmins);
+    		        context.setVariable("currentPage", currentPage);
+    		        context.setVariable("totalPages", totalPages);
+    		        context.setVariable("hasPrevious", currentPage > 1);
+    		        context.setVariable("hasNext", currentPage < totalPages);
+    		        
+    		        response.setContentType("text/html;charset=UTF-8");
+    		        templateEngine.process("users/admin", context, response.getWriter());
+    		        
+    		    } catch (Exception e) {
+    		        e.printStackTrace();
+    		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to fetch admins.");
+    		    }
+    		}
     
     private void insertAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String name = request.getParameter("name");
@@ -174,5 +201,50 @@ public class AdminController extends HttpServlet {
             e.printStackTrace();
             System.out.println("Invalid Client ID.");
         }
+    }
+    
+    private void adminSearch(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+    	 int currentPage = 1;
+	     int pageSize = 6; 
+	     List<Admin> searchResults = new ArrayList<Admin>();
+	        
+	        String pageParam = request.getParameter("page");
+	        if (pageParam != null && !pageParam.isEmpty()) {
+	            currentPage = Integer.parseInt(pageParam);
+	        }
+	        
+    	String terme = request.getParameter("searchTerm");
+    	if (terme != null && !terme.isEmpty()) {
+			searchResults = userService.searchAdmin(terme);
+		}else {
+			listAdmins(request, response);
+		}
+    	
+    	 	int totalAdmins = searchResults.size();
+	        
+	        int totalPages = (int) Math.ceil((double) totalAdmins / pageSize);
+	        
+	        int startIndex = (currentPage - 1) * pageSize;
+	        int endIndex = Math.min(startIndex + pageSize, totalAdmins);
+	        
+	        List<Admin> currentPageAdmins = searchResults.subList(startIndex, endIndex);
+	        
+    	WebContext context = new WebContext(
+	            request,
+	            response,
+	            getServletContext(),
+	            request.getLocale()
+	        );
+	        
+	        context.setVariable("admins", currentPageAdmins);
+	        context.setVariable("currentPage", currentPage);
+	        context.setVariable("totalPages", totalPages);
+	        context.setVariable("hasPrevious", currentPage > 1);
+	        context.setVariable("hasNext", currentPage < totalPages);
+	        
+	        response.setContentType("text/html;charset=UTF-8");
+	        templateEngine.process("users/admin", context, response.getWriter());
+    	
     }
 }

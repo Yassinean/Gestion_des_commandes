@@ -2,6 +2,7 @@ package com.oms.controller;
 
 import org.thymeleaf.context.WebContext;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -51,6 +52,9 @@ public class ClientController extends HttpServlet {
                 case "/deleteClient":
                     deleteClient(request, response);
                     break;
+                case "/search":
+                    clientSearch(request, response);
+                    break;    
                 default:
                     response.sendRedirect(request.getContextPath() + "/client");
                     break;
@@ -85,8 +89,20 @@ public class ClientController extends HttpServlet {
 
     private void listClients(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+    	int currentPage = 1;
+    	int pageSize = 6;
+    	
+    	String pageParam = request.getParameter("page");
+        if (pageParam != null && !pageParam.isEmpty()) {
+            currentPage = Integer.parseInt(pageParam);
+        }
+        
         try {
         	  List<Client> clients = userService.getAllClients();
+        	  int totalClients = clients.size();
+        	  int totalPages =(int)Math.ceil((double)totalClients /pageSize);
+        	  int startIndex = (currentPage - 1)*pageSize;
+              int endIndex = Math.min(startIndex + pageSize, totalClients);
               System.out.println("les admins : " +clients);
               WebContext context = new WebContext(
                   request, 
@@ -94,8 +110,12 @@ public class ClientController extends HttpServlet {
                   getServletContext(), 
                   request.getLocale()
               );
-              context.setVariable("clients", clients);
-              response.setContentType("text/html;charset=UTF-8");
+              List<Client> currentPageClients = clients.subList(startIndex, endIndex);
+              context.setVariable("clients", currentPageClients);
+              context.setVariable("currentPage", currentPage);
+              context.setVariable("totalPages", totalPages);
+              context.setVariable("hasPrevious", currentPage > 1);
+              context.setVariable("hasNext", currentPage < totalPages);              response.setContentType("text/html;charset=UTF-8");
               templateEngine.process("users/client", context, response.getWriter());
 
           } catch (Exception e) {
@@ -173,5 +193,50 @@ public class ClientController extends HttpServlet {
             e.printStackTrace();
             System.out.println("Invalid Client ID.");
         }
+    }
+    
+    private void clientSearch(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+    	 int currentPage = 1;
+	     int pageSize = 6; 
+	     List<Client> searchResults = new ArrayList<Client>();
+	        
+	        String pageParam = request.getParameter("page");
+	        if (pageParam != null && !pageParam.isEmpty()) {
+	            currentPage = Integer.parseInt(pageParam);
+	        }
+	        
+    	String terme = request.getParameter("searchTerm");
+    	if (terme != null && !terme.isEmpty()) {
+			searchResults = userService.searchClient(terme);
+		}else {
+			listClients(request, response);
+		}
+    	
+    	 	int totalClients = searchResults.size();
+	        
+	        int totalPages = (int) Math.ceil((double) totalClients / pageSize);
+	        
+	        int startIndex = (currentPage - 1) * pageSize;
+	        int endIndex = Math.min(startIndex + pageSize, totalClients);
+	        
+	        List<Client> currentPageClient = searchResults.subList(startIndex, endIndex);
+	        
+    	WebContext context = new WebContext(
+	            request,
+	            response,
+	            getServletContext(),
+	            request.getLocale()
+	        );
+	        
+	        context.setVariable("clients", currentPageClient);
+	        context.setVariable("currentPage", currentPage);
+	        context.setVariable("totalPages", totalPages);
+	        context.setVariable("hasPrevious", currentPage > 1);
+	        context.setVariable("hasNext", currentPage < totalPages);
+	        
+	        response.setContentType("text/html;charset=UTF-8");
+	        templateEngine.process("users/client", context, response.getWriter());
+    	
     }
 }
