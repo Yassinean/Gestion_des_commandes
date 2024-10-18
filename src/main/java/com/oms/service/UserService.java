@@ -59,4 +59,13 @@ public class UserService {
     public List<Client> searchClient(String terme) {
     	return userDAO.searchClient(terme);
     }
+    
+    public Optional<Admin> authenticateAdmin(String email, String password) {
+         return userDAO.authenticateAdmin(email, password); 
+    }
+
+    public Optional<Client> authenticateClient(String email, String password) {
+        return userDAO.authenticateClient(email, password);
+    }
+    
 }

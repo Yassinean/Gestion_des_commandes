@@ -1,52 +1,75 @@
 package com.oms.controller;
 
 import java.io.IOException;
-import javax.servlet.Filter;
+
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-/**
- * Servlet Filter implementation class UserFilter
- */
+import com.fasterxml.classmate.Filter;
+import com.oms.model.AdminType;
 
-public class UserFilter extends HttpFilter implements Filter {
-       
-    /**
-     * @see HttpFilter#HttpFilter()
-     */
-    public UserFilter() {
-        super();
-        // TODO Auto-generated constructor stub
+public class UserFilter implements Filter {
+    
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpSession session = httpRequest.getSession(false);
+        
+        String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+        
+        // URLs publiques
+        if (isPublicResource(path)) {
+            chain.doFilter(httpRequest, httpResponse);
+            return;
+        }
+        
+        // Vérification de l'authentification
+        if (session == null || session.getAttribute("userEmail") == null) {
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
+            return;
+        }
+        
+        // Vérification des autorisations
+        String userType = (String) session.getAttribute("userType");
+        
+        if (path.startsWith("/admin/")) {
+            if (!"Admin".equals(userType)) {
+                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+            
+            // Vérification des droits d'admin
+            if (path.contains("/admin-management") && 
+                session.getAttribute("adminType") != AdminType.SUPER_ADMIN) {
+                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+        }
+        
+        if (path.startsWith("/client/") && !"Client".equals(userType)) {
+            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        
+        chain.doFilter(request, response);
+    }
+    
+    private boolean isPublicResource(String path) {
+        return path.equals("/login") || 
+               path.startsWith("/assets/") || 
+               path.startsWith("/css/") || 
+               path.startsWith("/js/");
     }
 
-	/**
-	 * @see Filter#destroy()
-	 */
-	public void destroy() {
+	@Override
+	public boolean include(Object element) {
 		// TODO Auto-generated method stub
+		return false;
 	}
-
-	/**
-	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
-	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		// place your code here
-
-		// pass the request along the filter chain
-		chain.doFilter(request, response);
-	}
-
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
-	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
-	}
-
 }

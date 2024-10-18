@@ -7,11 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script></head>
     
 <body>
-<header  th:fragment="navbar" class='flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50'>
+<header  th:fragment="navbar" class='flex shadow-md spx-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50'>
   <div class='flex flex-wrap items-center justify-between gap-5 w-full'>
-<a href="">
-<img src="../asserts/syz.png" alt="logo" class="w-36" />
-</a>
+<a th:href="@{/}" class="logo">
+	  <img src="./images/syz.png" alt="logo" class="w-20">
+	</a>
     <div id="collapseMenu"
       class='max-lg:hidden lg:!block max-lg:before:fixed max-lg:before:bg-black max-lg:before:opacity-50 max-lg:before:inset-0 max-lg:before:z-50'>
       <button id="toggleClose" class='lg:hidden fixed top-2 right-4 z-[100] rounded-full bg-white p-3'>
@@ -33,13 +33,13 @@
         <a href='javascript:void(0)' class='hover:text-blue-500 text-blue-500 block font-semibold text-[15px]'>Home</a>
     </li>
     <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
+        <a href='javascript:void(0)' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Admin</a>
+    </li>
+    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
+        <a href='javascript:void(0)' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Client</a>
+    </li>
+    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
         <a href='javascript:void(0)' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Product</a>
-    </li>
-    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a href='javascript:void(0)' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Users</a>
-    </li>
-    <li class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a href='javascript:void(0)' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>About</a>
     </li>
 </ul>
 
