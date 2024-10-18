@@ -9,6 +9,7 @@
 	    <maven.compiler.source>1.8</maven.compiler.source>
 	    <maven.compiler.target>1.8</maven.compiler.target>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    
 	</properties>
 
   
@@ -92,18 +93,22 @@
 			    <artifactId>jbcrypt</artifactId>
 			    <version>0.4</version>
 			</dependency>
-		<dependency>
-        <groupId>org.thymeleaf</groupId>
-        <artifactId>thymeleaf</artifactId>
-        <version>3.0.12.RELEASE</version>
-    </dependency>
-  <dependency>
-        <groupId>org.thymeleaf</groupId>
-        <artifactId>thymeleaf-spring5</artifactId>
-        <version>3.0.12.RELEASE</version> <!-- Adjust to the version you need -->
-    </dependency>
+			<dependency>
+			    <groupId>org.thymeleaf</groupId>
+			    <artifactId>thymeleaf</artifactId>
+			    <version>3.0.12.RELEASE</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.thymeleaf</groupId>
+			    <artifactId>thymeleaf-spring5</artifactId>
+			    <version>3.0.12.RELEASE</version>
+			</dependency>
+			<dependency>
+			    <groupId>nz.net.ultraq.thymeleaf</groupId>
+			    <artifactId>thymeleaf-layout-dialect</artifactId>
+			    <version>3.1.0</version>
+			</dependency>
 
-    
     <!-- Servlet API -->
     <dependency>
         <groupId>javax.servlet</groupId>
@@ -112,6 +117,7 @@
 
         <scope>provided</scope>
     </dependency>
+    
 
    </dependencies>
   <build>

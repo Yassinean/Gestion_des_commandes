@@ -31,7 +31,7 @@ public class ProductServiceTest {
     public void testCreateProduct() {
         Product product = new Product(1, "Laptop", "Good Quality" ,1200.00, 10);
         when(productRepository.saveProduct(product)).thenReturn(product);
-System.out.println(product);
+        System.out.println(product);
         Product createdProduct = productService.saveProduct(product);
         
         assertNotNull(createdProduct);
