@@ -8,6 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -18,18 +22,27 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     
-    @Column(name = "nom")
+    @NotBlank(message = "Nom is required")
+    @Size(max = 50, message = "Nom must not exceed 50 characters")
+    @Column(name = "nom", nullable = false)
     private String nom;
     
-    @Column(name = "prenom")
+    @NotBlank(message = "Prenom is required")
+    @Size(max = 50, message = "Prenom must not exceed 50 characters")
+    @Column(name = "prenom", nullable = false)	
     private String prenom;
     
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
     
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     @Column(name = "password", nullable = false)
     private String motDePasse;
     
+    @NotNull(message = "User type (role) is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private role userType;

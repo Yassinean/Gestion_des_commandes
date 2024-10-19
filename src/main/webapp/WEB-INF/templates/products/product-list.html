@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/forms@0.5.2/dist/forms.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+<div th:replace="component/navbar :: navbar"></div>
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mt-5 mb-8">Product List</h1>
+
+        <!-- Search Bar -->
+        <form class="flex space-x-3 mb-6" th:action="@{/products}" method="get">
+            <input type="hidden" name="action" value="search">
+            <input class="flex-1 px-4 py-2 border rounded-lg" 
+                   type="search" name="search" placeholder="Search by name" aria-label="Search">
+            <button class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                Search
+            </button>
+            <a th:href="@{/products}" class="mx-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                All
+            </a>
+        </form>
+
+        <div th:if="${error}" class="text-center text-red-500 mt-4">
+            <p th:text="${error}"></p>
+        </div>
+        <div th:if="${message}" class="text-center text-green-500 mt-4">
+            <p th:text="${message}"></p>
+        </div>
+
+        <div class="flex justify-end mb-6">
+            <button class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                    onclick="openNewProductModal()">
+                Add New Product
+            </button>
+        </div>
+
+        <!-- Product Cards Grid -->
+       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+		    <div th:each="product : ${products}" class="flex flex-col bg-white rounded-lg shadow-md overflow-hidden">
+		        <div class="relative">
+		            <img src="https://images.pexels.com/photos/4381392/pexels-photo-4381392.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="Product Image" class="w-full h-48 object-cover" />
+		            <div class="absolute top-2 right-2 bg-pink-500 text-white text-xs px-2 py-1 rounded">
+		                <span th:text="'Stock: ' + ${product.stock}">Stock: 0</span>
+		            </div>
+		        </div>
+		        <div class="p-4 flex flex-col flex-grow">
+		            <h3 class="font-bold text-lg text-gray-800" th:text="${product.name}">Product Name</h3>
+		            <p class="text-gray-600 text-sm flex-grow" th:text="${product.description}">Product Description</p>
+		            <p class="text-xl text-gray-800" th:text="'Price: $' + ${product.price}">Price: $100</p>
+		        </div>
+		        <div class="flex justify-between p-4 border-t border-gray-200">
+		            <button class="flex items-center px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded" 
+		            			th:onclick="openEditProductModal([[${product.id}]], [[${product.name}]], [[${product.description}]], [[${product.price}]], [[${product.stock}]])">
+		                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+		                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+		                </svg>
+		                Edit
+		            </button>
+		            <a th:href="@{/products?action=delete(id=${product.id})}" class="flex items-center px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded">
+		                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+		                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+		                </svg>
+		                Delete
+		            </a>
+		        </div>
+		    </div>
+		</div>
+		
+
+        <!-- Pagination Controls -->
+        <nav th:if="${paginationNeeded}" class="mt-8">
+            <ul class="flex justify-center space-x-2">
+                <li th:classappend="${currentPage == 1} ? 'opacity-50 pointer-events-none'">
+                    <a class="px-3 py-1 border rounded-lg" 
+                       th:href="@{/products(page=${currentPage - 1})}">Previous</a>
+                </li>
+                <li th:each="page : ${#numbers.sequence(1, totalPages)}" 
+                    th:classappend="${page == currentPage} ? 'bg-blue-500 text-white'">
+                    <a class="px-3 py-1 border rounded-lg" 
+                       th:href="@{/products(page=${page})}" th:text="${page}"></a>
+                </li>
+                <li th:classappend="${currentPage == totalPages} ? 'opacity-50 pointer-events-none'">
+                    <a class="px-3 py-1 border rounded-lg" 
+                       th:href="@{/products(page=${currentPage + 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="productModal">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+            <h2 id="productModalLabel" class="text-2xl font-bold mb-4">New Product</h2>
+            <form id="productForm" th:action="@{/products}" method="post">
+                <input type="hidden" name="id" id="productId">
+                <input type="hidden" name="action" id="productAction" value="insert">
+
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium">Name</label>
+                    <input type="text" id="name" name="name" class="mt-1 w-full border rounded-lg px-3 py-2" required>
+                    <p id="nameError" class="text-red-500 text-sm mt-1 hidden"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="description" class="block text-sm font-medium">Description</label>
+                    <textarea id="description" name="description" class="mt-1 w-full border rounded-lg px-3 py-2"></textarea>
+                    <p id="descError" class="text-red-500 text-sm mt-1 hidden"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="price" class="block text-sm font-medium">Price</label>
+                    <input type="number" id="price" name="price" step="0.1" class="mt-1 w-full border rounded-lg px-3 py-2" required>
+                    <p id="priceError" class="text-red-500 text-sm mt-1 hidden"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="stock" class="block text-sm font-medium">Stock</label>
+                    <input type="number" id="stock" name="stock" class="mt-1 w-full border rounded-lg px-3 py-2" required>
+                    <p id="stockError" class="text-red-500 text-sm mt-1 hidden"></p>
+                </div>
+
+                <div class="flex justify-end space-x-2">
+                    <button type="button" class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400" onclick="closeModal()">Close</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openNewProductModal() {
+            document.getElementById('productModalLabel').textContent = 'New Product';
+            document.getElementById('productAction').value = 'insert';
+            document.getElementById('productId').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('stock').value = '';
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function openEditProductModal(id, name, description, price, stock) {
+            document.getElementById('productModalLabel').textContent = 'Edit Product';
+            document.getElementById('productAction').value = 'update';
+            document.getElementById('productId').value = id;
+            document.getElementById('name').value = name;
+            document.getElementById('description').value = description;
+            document.getElementById('price').value = price;
+            document.getElementById('stock').value = stock;
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        document.getElementById('productForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let error = false;
+
+            const nameError = document.getElementById('nameError');
+            nameError.textContent = '';
+            const descError = document.getElementById('descError');
+            descError.textContent = '';
+            const priceError = document.getElementById('priceError');
+            priceError.textContent = '';
+            const stockError = document.getElementById('stockError');
+            stockError.textContent = '';
+
+            const nameInput = document.querySelector('input[name="name"]');
+            if (!nameInput.value || nameInput.value.length < 3) {
+                nameError.textContent = "Product name must be at least 3 characters long.";
+                nameError.classList.remove('hidden');
+                error = true;
+            }
+
+            const descInput = document.querySelector('textarea[name="description"]');
+            if (!descInput.value || descInput.value.length < 3) {
+                descError.textContent = "Product description must be at least 3 characters long.";
+                descError.classList.remove('hidden');
+                error = true;
+            }
+
+            const priceInput = document.querySelector('input[name="price"]');
+            if (!priceInput.value || priceInput.value <= 0) {
+                priceError.textContent = "Price must be greater than 0.";
+                priceError.classList.remove('hidden');
+                error = true;
+            }
+
+            const stockInput = document.querySelector('input[name="stock"]');
+            if (!stockInput.value || stockInput.value < 0) {
+                stockError.textContent = "Stock cannot be negative.";
+                stockError.classList.remove('hidden');
+                error = true;
+            }
+
+            if (!error) {
+                e.target.submit();
+            }
+        });
+
+    </script>
+</body>
+</html>

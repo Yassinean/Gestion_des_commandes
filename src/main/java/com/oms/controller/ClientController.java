@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.thymeleaf.ITemplateEngine;
 import com.huongdanjava.jakartaee.servlet.ThymeleafConfig;
+import com.huongdanjava.jakartaee.servlet.ThymeleafUtil;
 import com.oms.model.Client;
 import com.oms.service.UserService;
 
@@ -27,7 +28,7 @@ public class ClientController extends HttpServlet {
     public void init() throws ServletException {
     	userService = new UserService();
         ServletContext servletContext = getServletContext();
-        this.templateEngine = (ITemplateEngine) servletContext.getAttribute(ThymeleafConfig.TEMPLATE_ENGINE_ATTR);
+        this.templateEngine = (ITemplateEngine) servletContext.getAttribute(ThymeleafUtil.TEMPLATE_ENGINE_ATTR);
 
         if (this.templateEngine == null) {
             throw new ServletException("Thymeleaf template engine not initialized");
