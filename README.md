@@ -103,6 +103,8 @@ Ce projet vise à développer une application web sécurisée permettant aux cli
 - Gestion du projet avec JIRA et méthode Scrum.
 
 ## Pages 
+### Login page
+![Screenshot from 2024-10-19 16-23-51](https://github.com/user-attachments/assets/37a1f2c4-f786-4e0e-a7f2-2dcf71755996)
 ### Liste des produits pour les admins
 ![Screenshot from 2024-10-19 16-01-07](https://github.com/user-attachments/assets/35f5d0c9-c706-47b4-9674-dce408bc8205)
 
