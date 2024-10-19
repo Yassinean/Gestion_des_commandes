@@ -53,5 +53,10 @@ public class UserService {
     public List<Admin> getAllAdmins() {
         return userDAO.getAllAdmins();
     }
-  
+    public List<Admin> searchAdmin(String terme) {
+    	return userDAO.searchAdmin(terme);
+    }
+    public List<Client> searchClient(String terme) {
+    	return userDAO.searchClient(terme);
+    }
 }

@@ -164,7 +164,28 @@ public class UserDAOImpl implements UserDAO  {
         return Optional.ofNullable(em.find(Client.class, id));
     }
     
-	
+    @Override
+    public List<Admin> searchAdmin(String searchTerm) {
+            String searchPattern = "%" + searchTerm + "%";
+            return em.createQuery(
+                "SELECT a FROM Admin a WHERE " +
+               "LOWER(a.nom) LIKE LOWER(:searchTerm) OR " +
+               "LOWER(a.prenom) LIKE LOWER(:searchTerm) " ,
+                Admin.class)
+            .setParameter("searchTerm", searchPattern)
+            .getResultList();
+    }    
+    @Override
+    public List<Client> searchClient(String searchTerm) {
+            String searchPattern = "%" + searchTerm + "%";
+            return em.createQuery(
+                "SELECT a FROM Client a WHERE " +
+                "LOWER(a.nom) LIKE LOWER(:searchTerm) OR " +
+                "LOWER(a.prenom) LIKE LOWER(:searchTerm) " ,
+                Client.class)
+            .setParameter("searchTerm", searchPattern)
+            .getResultList();
+    }
 	
 		
 }
