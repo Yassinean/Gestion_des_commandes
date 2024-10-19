@@ -23,19 +23,16 @@ public class UserFilter implements Filter {
         
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         
-        // URLs publiques
         if (isPublicResource(path)) {
             chain.doFilter(httpRequest, httpResponse);
             return;
         }
         
-        // Vérification de l'authentification
         if (session == null || session.getAttribute("userEmail") == null) {
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
             return;
         }
         
-        // Vérification des autorisations
         String userType = (String) session.getAttribute("userType");
         
         if (path.startsWith("/admin/")) {
@@ -44,7 +41,6 @@ public class UserFilter implements Filter {
                 return;
             }
             
-            // Vérification des droits d'admin
             if (path.contains("/admin-management") && 
                 session.getAttribute("adminType") != AdminType.SUPER_ADMIN) {
                 httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);

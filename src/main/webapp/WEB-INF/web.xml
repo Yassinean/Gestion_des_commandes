@@ -5,7 +5,7 @@
 	version="3.1">
 
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
+		<welcome-file>Login.html</welcome-file>
 	</welcome-file-list>
 
 	<servlet>
@@ -42,6 +42,8 @@
 		<servlet-name>default</servlet-name>
 		<url-pattern>/asserts/*</url-pattern>
 	</servlet-mapping>
+
+    
 	<listener>
 		<listener-class>com.huongdanjava.jakartaee.servlet.ThymeleafConfig</listener-class>
 	</listener>

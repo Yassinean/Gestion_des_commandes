@@ -40,14 +40,24 @@ public class AuthenticationController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Expires", "0");
-        
-        ServletContext servletContext = getServletContext();
-        WebContext context = new WebContext(request, response, servletContext);
-        
-        templateEngine.process("users/Login", context, response.getWriter());
+        String action = request.getParameter("action");
+
+        if ("logout".equals(action)) {
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate(); 
+            }
+            response.sendRedirect(request.getContextPath() + "/login");
+        } else {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Expires", "0");
+
+            ServletContext servletContext = getServletContext();
+            WebContext context = new WebContext(request, response, servletContext);
+
+            templateEngine.process("users/Login", context, response.getWriter());
+        }
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -76,7 +86,11 @@ public class AuthenticationController extends HttpServlet {
                     session.setAttribute("userType", userType);
                     session.setAttribute("adminType", admin.getAdminType());
                     System.out.println("Admin authentifié avec succès");
-                    response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                    if (admin.getAdminType().name()=="SUPER_ADMIN") {
+                        response.sendRedirect(request.getContextPath() + "/admin");
+					}else {
+                        response.sendRedirect(request.getContextPath() + "/client");
+					}
                 } else {
                     System.out.println("Échec authentification admin");
                     handleError(request, response, "Email ou mot de passe incorrect pour admin.");
@@ -87,7 +101,7 @@ public class AuthenticationController extends HttpServlet {
                     session.setAttribute("userEmail", email);
                     session.setAttribute("userType", userType);
                     System.out.println("Client authentifié avec succès");
-                    response.sendRedirect(request.getContextPath() + "/client/dashboard");
+                    response.sendRedirect(request.getContextPath() + "/client");
                 } else {
                     System.out.println("Échec authentification client");
                     handleError(request, response, "Email ou mot de passe incorrect pour client.");
