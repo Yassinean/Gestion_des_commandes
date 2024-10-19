@@ -5,7 +5,10 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.oms.dao.Interface.UserDAO;
 import com.oms.model.Admin;
@@ -154,15 +157,7 @@ public class UserDAOImpl implements UserDAO  {
 
         }
         return false;
-    }
-    @Override
-    public Optional<Admin> getAdminById(int id) {
-        return Optional.ofNullable(em.find(Admin.class, id));
-    }
-    @Override
-    public Optional<Client> getClientById(int id) {
-        return Optional.ofNullable(em.find(Client.class, id));
-    }
+    }   
     
     @Override
     public List<Admin> searchAdmin(String searchTerm) {
@@ -174,7 +169,8 @@ public class UserDAOImpl implements UserDAO  {
                 Admin.class)
             .setParameter("searchTerm", searchPattern)
             .getResultList();
-    }    
+    } 
+    
     @Override
     public List<Client> searchClient(String searchTerm) {
             String searchPattern = "%" + searchTerm + "%";
@@ -186,6 +182,58 @@ public class UserDAOImpl implements UserDAO  {
             .setParameter("searchTerm", searchPattern)
             .getResultList();
     }
-	
+    @Override
+    public Optional<Admin> authenticateAdmin(String email, String password) {
+        try {            
+            Admin admin = em.createQuery(
+                "SELECT a FROM Admin a WHERE a.email = :email", 
+                Admin.class)
+                .setParameter("email", email)
+                .getSingleResult();
+            
+            System.out.println("Admin trouvé: " + admin);
+            
+            if (admin != null && BCrypt.checkpw(password, admin.getMotDePasse())) {
+                return Optional.of(admin);
+            }
+            
+            return Optional.empty();
+        } catch (NoResultException e) {
+            System.out.println("Admin introuvable avec cet email.");
+            return Optional.empty();
+        }
+    }
+
+
+    @Override
+    public Optional<Client> authenticateClient(String email, String password) {
+        try {            
+            Client client = em.createQuery(
+                "SELECT c FROM Client c WHERE c.email = :email", 
+                Client.class)
+                .setParameter("email", email)
+                .getSingleResult();
+                
+            System.out.println("Client trouvé: " + client);
+            
+            if(client != null && BCrypt.checkpw(password, client.getMotDePasse())) {
+                return Optional.of(client);
+            }
+            
+            return Optional.empty();
+        } catch (NoResultException e) {
+            System.out.println("Client introuvable avec cet email.");
+            return Optional.empty();
+        } 
+    }
+    @Override
+    public Optional<Admin> getAdminById(int id) {
+        return Optional.ofNullable(em.find(Admin.class, id));
+    }
+    @Override
+    public Optional<Client> getClientById(int id) {
+        return Optional.ofNullable(em.find(Client.class, id));
+    }
+    	
 		
 }
