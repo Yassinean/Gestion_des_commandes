@@ -10,8 +10,8 @@
 <header  th:fragment="navbar" class='flex shadow-md spx-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50'>
   <div class='flex flex-wrap items-center justify-between gap-5 w-full'>
 	<a th:href="@{/}" class="logo">
-	  <img src="./images/syz.png" alt="logo" class="w-20">
-	</a>
+            <img th:src="@{/asserts/syz.png}" alt="logo" class="w-20">
+    </a>
     <div id="collapseMenu"
       class='max-lg:hidden lg:!block max-lg:before:fixed max-lg:before:bg-black max-lg:before:opacity-50 max-lg:before:inset-0 max-lg:before:z-50'>
       <button id="toggleClose" class='lg:hidden fixed top-2 right-4 z-[100] rounded-full bg-white p-3'>
@@ -25,7 +25,7 @@
         </svg>
       </button>
 
-      <ul class='lg:flex gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50'>
+     <ul class='lg:flex gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50'>
     <li class='mb-6 hidden max-lg:block'>
         <a href="javascript:void(0)"><img src="dddd" alt="logo" class='w-36' /></a>
     </li>
@@ -36,7 +36,7 @@
         <a href='/OMS/client' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Client</a>
     </li>
     <li th:if="${session.userType == 'Admin'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a href='/OMS/product' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Product</a>
+        <a href='/OMS/products' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Product</a>
     </li>
     <li th:if="${session.userType == 'Admin'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
         <a href='/OMS/commande' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Commande</a>
@@ -49,6 +49,8 @@
         <a href='/OMS/commandes' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Commandes</a>
     </li>
 </ul>
+     </div>
+
      <div class='flex max-lg:ml-auto space-x-3'>
       <a href="${pageContext.request.contextPath}/auth?action=logout">
     <button
