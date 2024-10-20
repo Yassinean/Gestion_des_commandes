@@ -13,8 +13,6 @@ Ce projet vise à développer une application web sécurisée permettant aux cli
 - [Concepts Java Avancés](#concepts-java-avancés)
 - [Installation](#installation)
 - [Tests](#tests)
-- [Contributions](#contributions)
-- [License](#license)
 
 ## Objectifs
 
