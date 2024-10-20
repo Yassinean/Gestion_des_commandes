@@ -86,11 +86,12 @@ public class AuthenticationController extends HttpServlet {
                     session.setAttribute("userType", userType);
                     session.setAttribute("adminType", admin.getAdminType());
                     System.out.println("Admin authentifié avec succès");
-                    if (admin.getAdminType().name()=="SUPER_ADMIN") {
-                        response.sendRedirect(request.getContextPath() + "/admin");
-					}else {
-                        response.sendRedirect(request.getContextPath() + "/client");
-					}
+                    if ("SUPER_ADMIN".equals(admin.getAdminType().name())) {
+                        response.sendRedirect("admin");
+                    } else {
+                        response.sendRedirect("client");
+                    }
+
                 } else {
                     System.out.println("Échec authentification admin");
                     handleError(request, response, "Email ou mot de passe incorrect pour admin.");
@@ -101,7 +102,7 @@ public class AuthenticationController extends HttpServlet {
                     session.setAttribute("userEmail", email);
                     session.setAttribute("userType", userType);
                     System.out.println("Client authentifié avec succès");
-                    response.sendRedirect(request.getContextPath() + "/client");
+                    response.sendRedirect(request.getContextPath() + "/products");
                 } else {
                     System.out.println("Échec authentification client");
                     handleError(request, response, "Email ou mot de passe incorrect pour client.");

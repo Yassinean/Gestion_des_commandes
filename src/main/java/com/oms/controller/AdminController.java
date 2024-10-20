@@ -11,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.thymeleaf.ITemplateEngine;
 import com.huongdanjava.jakartaee.servlet.ThymeleafConfig;
 import com.oms.model.Admin;
@@ -92,47 +94,63 @@ public class AdminController extends HttpServlet {
     }
 
     private void listAdmins(HttpServletRequest request, HttpServletResponse response) 
-    		throws ServletException, IOException {
-    		    try {
-    		        int currentPage = 1;
-    		        int pageSize = 6; 
-    		        
-    		        String pageParam = request.getParameter("page");
-    		        if (pageParam != null && !pageParam.isEmpty()) {
-    		            currentPage = Integer.parseInt(pageParam);
-    		        }
-    		        
-    		        List<Admin> allAdmins = userService.getAllAdmins();
-    		        int totalAdmins = allAdmins.size();
-    		        
-    		        int totalPages = (int) Math.ceil((double) totalAdmins / pageSize);
-    		        
-    		        int startIndex = (currentPage - 1) * pageSize;
-    		        int endIndex = Math.min(startIndex + pageSize, totalAdmins);
-    		        
-    		        List<Admin> currentPageAdmins = allAdmins.subList(startIndex, endIndex);
-    		        
-    		        WebContext context = new WebContext(
-    		            request,
-    		            response,
-    		            getServletContext(),
-    		            request.getLocale()
-    		        );
-    		        
-    		        context.setVariable("admins", currentPageAdmins);
-    		        context.setVariable("currentPage", currentPage);
-    		        context.setVariable("totalPages", totalPages);
-    		        context.setVariable("hasPrevious", currentPage > 1);
-    		        context.setVariable("hasNext", currentPage < totalPages);
-    		        
-    		        response.setContentType("text/html;charset=UTF-8");
-    		        templateEngine.process("users/admin", context, response.getWriter());
-    		        
-    		    } catch (Exception e) {
-    		        e.printStackTrace();
-    		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to fetch admins.");
-    		    }
-    		}
+            throws ServletException, IOException {
+        try {
+            HttpSession session = request.getSession();
+            String userType = (String) session.getAttribute("userType");
+            AdminType adminType = (AdminType) session.getAttribute("adminType");
+
+            if (!"Admin".equals(userType) || adminType != AdminType.SUPER_ADMIN) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied.");
+                return; 
+            }
+
+            int currentPage = 1;
+            int pageSize = 6; 
+            
+            String pageParam = request.getParameter("page");
+            if (pageParam != null && !pageParam.isEmpty()) {
+                try {
+                    currentPage = Integer.parseInt(pageParam);
+                } catch (NumberFormatException e) {
+                    currentPage = 1; 
+                }
+            }
+
+            List<Admin> allAdmins = userService.getAllAdmins();
+            int totalAdmins = allAdmins.size();
+            
+            int totalPages = (int) Math.ceil((double) totalAdmins / pageSize);
+            
+            currentPage = Math.max(1, Math.min(currentPage, totalPages));
+            
+            int startIndex = (currentPage - 1) * pageSize;
+            int endIndex = Math.min(startIndex + pageSize, totalAdmins);
+            
+            List<Admin> currentPageAdmins = allAdmins.subList(startIndex, endIndex);
+            
+            WebContext context = new WebContext(
+                request,
+                response,
+                getServletContext(),
+                request.getLocale()
+            );
+            
+            context.setVariable("admins", currentPageAdmins);
+            context.setVariable("currentPage", currentPage);
+            context.setVariable("totalPages", totalPages);
+            context.setVariable("hasPrevious", currentPage > 1);
+            context.setVariable("hasNext", currentPage < totalPages);
+            
+            response.setContentType("text/html;charset=UTF-8");
+            templateEngine.process("users/admin", context, response.getWriter());
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to fetch admins. Please try again later.");
+        }
+    }
+
     
     private void insertAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String name = request.getParameter("name");
@@ -172,33 +190,28 @@ public class AdminController extends HttpServlet {
         String adminType = request.getParameter("adminType");
 
         Optional<Admin> existingAdminOptional = userService.getAdminById(adminId);
-        
+
         if (!existingAdminOptional.isPresent()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Admin not found.");
             return;
         }
-        
+
         Admin existingAdmin = existingAdminOptional.get();
-        
-        AdminType adminType2 = adminType != null && !adminType.isEmpty() ? 
-                                AdminType.valueOf(adminType) : existingAdmin.getAdminType();
-        
-        Admin admin = new Admin();
-        admin.setId(adminId);
-        admin.setNom(nom);
-        admin.setPrenom(prenom);
-        admin.setEmail(email);
-        
-        if (motDePasse != null && !motDePasse.isEmpty()) {
-            admin.setMotDePasse(motDePasse); 
-        } else {
-            admin.setMotDePasse(existingAdmin.getMotDePasse());
+
+        existingAdmin.setNom(nom);
+        existingAdmin.setPrenom(prenom);
+        existingAdmin.setEmail(email);
+
+        if (motDePasse != null && !motDePasse.trim().isEmpty()) {
+            existingAdmin.setMotDePasse(motDePasse); // This will handle hashing as needed
         }
-        
-        admin.setAdminType(adminType2); 
-        
-        boolean isUpdated = userService.updateAdmin(admin);
-        
+
+        if (adminType != null && !adminType.trim().isEmpty()) {
+            existingAdmin.setAdminType(AdminType.valueOf(adminType));
+        }
+
+        boolean isUpdated = userService.updateAdmin(existingAdmin);
+
         if (isUpdated) {
             response.sendRedirect("admin");
         } else {

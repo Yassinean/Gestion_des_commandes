@@ -29,9 +29,12 @@
     <li class='mb-6 hidden max-lg:block'>
         <a href="javascript:void(0)"><img src="dddd" alt="logo" class='w-36' /></a>
     </li>
-    <li th:if="${session.userType == 'Admin' && session.adminType.name() == 'SUPER_ADMIN'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a th:href="@{/admin}" class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Admin</a>
-    </li>
+    
+   <li th:if="${session.userType == 'Admin' && session.adminType.name() == 'SUPER_ADMIN'}"
+ 	class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
+    <a th:href="@{/admin}" class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Admin</a>
+	</li>
+
     <li th:if="${session.userType == 'Admin'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
         <a th:href="@{/client}" class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Client</a>
     </li>
