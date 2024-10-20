@@ -1,6 +1,7 @@
 package com.oms.controller;
 
 import com.oms.dao.implementation.ProductDAOImpl;
+import com.oms.model.AdminType;
 import com.oms.model.Product;
 import com.oms.service.ProductService;
 import com.oms.util.ThymeleafUtil;
@@ -32,9 +33,10 @@ public class ProductController extends HttpServlet {
 	        String action = request.getParameter("action");
 	        if (action == null) action = "list";
 
+	        
 	        HttpSession session = request.getSession(true);
 	        String userType = (String) session.getAttribute("userType");
-
+	        
 	        switch (action) {
 	            case "list":
 	                listProducts(request, response);
@@ -89,6 +91,11 @@ public class ProductController extends HttpServlet {
     	   
     	    HttpSession session = request.getSession(false);
     	    String userType = (String) session.getAttribute("userType");
+    	   System.out.println("hada howa : "+userType);
+	        if (!"Admin".equals(userType) && !"Client".equals(userType)) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied.");
+                return; 
+            }
 
     	    request.setAttribute("userType", userType);
     	    request.setAttribute("products", products);
