@@ -28,6 +28,8 @@
         <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
     </div>
 </form>
+
+
 	<!-- Main modal -->
 <div id="crud-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full">
@@ -45,8 +47,17 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <!-- Modal body -->
-		<form th:action="@{/admin/insertAdmin}" method="post" class="p-4 md:p-5">
+
+<!-- Modal body -->
+		<form id="adminForm" th:action="@{/admin/insertAdmin}" method="post" class="p-4 md:p-5">
+			<div>
+			    <th:block th:if="${errorMessages}">
+			        <ul class="text-red-500">
+			            <li th:each="message : ${errorMessages}" th:text="${message}"></li>
+			        </ul>
+			    </th:block>
+			</div>
+
                 <div class="grid gap-4 mb-4 grid-cols-2">
                     <div class="col-span-2">
                         <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
@@ -79,6 +90,7 @@
                     Add new admin
                 </button>
             </form>
+
         </div>
     </div>
 </div>
@@ -166,13 +178,13 @@
                     </div>
                     <div class="col-span-2">
                         <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
-                        <input type="password" name="password" id="password" 
+                        <input type="password" name="password" id="password"  
                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
-                               required>
+                               >
                     </div>
                     <div class="col-span-2">                       
                         <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Admin Type</label>
-                        <select name="adminType" id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
+                        <select name="adminType" id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" >
 						    <option value="" disabled selected>Select Admin Type</option>
 						    <option value="SUPER_ADMIN">Super Admin</option>
 						    <option value="ADMIN">Admin</option>
@@ -232,6 +244,7 @@
 
 
 	<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+
 	
 </body>
 </html>

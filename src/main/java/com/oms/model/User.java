@@ -29,7 +29,7 @@ public abstract class User {
     
     @NotBlank(message = "Prenom is required")
     @Size(max = 50, message = "Prenom must not exceed 50 characters")
-    @Column(name = "prenom", nullable = false)	
+    @Column(name = "prenom", nullable = false)    
     private String prenom;
     
     @NotBlank(message = "Email is required")

@@ -4,6 +4,7 @@ import org.thymeleaf.context.WebContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -161,31 +162,50 @@ public class AdminController extends HttpServlet {
         }
     }
     
-    private void updateAdmin(HttpServletRequest request , HttpServletResponse response)
-    throws ServletException , IOException {
-    	int adminId = Integer.parseInt(request.getParameter("adminUpdate"));
-    	String nom = request.getParameter("nom");
+    private void updateAdmin(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int adminId = Integer.parseInt(request.getParameter("adminUpdate"));
+        String nom = request.getParameter("nom");
         String prenom = request.getParameter("prenom");
         String email = request.getParameter("email");
         String motDePasse = request.getParameter("password");
         String adminType = request.getParameter("adminType");
-        AdminType adminType2 = AdminType.valueOf(adminType);
+
+        Optional<Admin> existingAdminOptional = userService.getAdminById(adminId);
+        
+        if (!existingAdminOptional.isPresent()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Admin not found.");
+            return;
+        }
+        
+        Admin existingAdmin = existingAdminOptional.get();
+        
+        AdminType adminType2 = adminType != null && !adminType.isEmpty() ? 
+                                AdminType.valueOf(adminType) : existingAdmin.getAdminType();
+        
         Admin admin = new Admin();
         admin.setId(adminId);
         admin.setNom(nom);
         admin.setPrenom(prenom);
         admin.setEmail(email);
-        admin.setMotDePasse(motDePasse);
-        admin.setAdminType(adminType2);
+        
+        if (motDePasse != null && !motDePasse.isEmpty()) {
+            admin.setMotDePasse(motDePasse); // This will hash the new password
+        } else {
+            admin.setMotDePasse(existingAdmin.getMotDePasse()); // Keep the old password
+        }
+        
+        admin.setAdminType(adminType2); 
         
         boolean isUpdated = userService.updateAdmin(admin);
         
         if (isUpdated) {
             response.sendRedirect("admin");
         } else {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"Failed to update Admin.");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update Admin.");
         }
     }
+
 
     private void deleteAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

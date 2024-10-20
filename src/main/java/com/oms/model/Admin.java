@@ -5,12 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "admin")
 public class Admin extends User {
     
     @Enumerated(EnumType.STRING)
+    @NotNull
     @Column(name = "admin_type", nullable = false)
     private AdminType adminType;
 
