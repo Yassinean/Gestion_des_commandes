@@ -113,6 +113,12 @@ Ce projet vise à développer une application web sécurisée permettant aux cli
 ![Screenshot from 2024-10-19 16-23-51](https://github.com/user-attachments/assets/37a1f2c4-f786-4e0e-a7f2-2dcf71755996)
 ### Liste des produits pour les admins
 ![Screenshot from 2024-10-19 16-01-07](https://github.com/user-attachments/assets/35f5d0c9-c706-47b4-9674-dce408bc8205)
+### Liste des clients pour les admins
+![Screenshot from 2024-10-20 14-54-08](https://github.com/user-attachments/assets/27acbc27-d14d-4b97-8410-1de5847a6dba)
+### Liste des admins 
+![Screenshot from 2024-10-20 14-54-20](https://github.com/user-attachments/assets/0de4a0d9-55b4-40d4-a8d8-cd533cd6938d)
+
+
 ### Liste des produits pour les clients
 ![Screenshot from 2024-10-20 14-41-25](https://github.com/user-attachments/assets/1f724040-900c-486c-9d53-17e7a57830f0)
 
