@@ -33,7 +33,7 @@
         </div>
 
         <div class="flex justify-end mb-6">
-            <button class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            <button th:if="${session.userType == 'Admin'}" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
                     onclick="openNewProductModal()">
                 Add New Product
             </button>
@@ -53,7 +53,7 @@
 		            <p class="text-gray-600 text-sm flex-grow" th:text="${product.description}">Product Description</p>
 		            <p class="text-xl text-gray-800" th:text="'Price: $' + ${product.price}">Price: $100</p>
 		        </div>
-		        <div class="flex justify-between p-4 border-t border-gray-200">
+		        <div th:if="${session.userType == 'Admin'}" class="flex justify-between p-4 border-t border-gray-200">
 		            <button class="flex items-center px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded" 
 		            			th:onclick="openEditProductModal([[${product.id}]], [[${product.name}]], [[${product.description}]], [[${product.price}]], [[${product.stock}]])">
 		                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -68,6 +68,12 @@
 		                Delete
 		            </a>
 		        </div>
+		        <a th:href="@{/products}" th:if="${session.userType == 'Client'}"  class="flex items-center px-3 py-1 bg-blue-600 hover:bg-red-700 text-white text-sm font-medium rounded">
+		                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+					    </svg>
+		                Command
+		            </a>
 		    </div>
 		</div>
 		

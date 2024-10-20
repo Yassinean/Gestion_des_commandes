@@ -30,23 +30,23 @@
         <a href="javascript:void(0)"><img src="dddd" alt="logo" class='w-36' /></a>
     </li>
     <li th:if="${session.userType == 'Admin' && session.adminType.name() == 'SUPER_ADMIN'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a href='/OMS/admin' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Admin</a>
+        <a th:href="@{/admin}" class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Admin</a>
     </li>
     <li th:if="${session.userType == 'Admin'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a href='/OMS/client' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Client</a>
+        <a th:href="@{/client}" class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Client</a>
     </li>
     <li th:if="${session.userType == 'Admin'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a href='/OMS/products' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Product</a>
+        <a th:href="@{/products}" class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Product</a>
     </li>
     <li th:if="${session.userType == 'Admin'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a href='/OMS/commande' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Commande</a>
+        <a th:href="@{/commande}" class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Commande</a>
     </li>
     
      <li th:if="${session.userType == 'Client'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a href='/OMS/products' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Products</a>
+        <a th:href="@{/products}" class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Products</a>
     </li>
      <li th:if="${session.userType == 'Client'}" class='max-lg:border-b border-gray-300 max-lg:py-3 px-3'>
-        <a href='/OMS/commandes' class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Commandes</a>
+        <a th:href="@{/commandes}" class='hover:text-blue-500 text-gray-500 block font-semibold text-[15px]'>Commandes</a>
     </li>
 </ul>
      </div>
