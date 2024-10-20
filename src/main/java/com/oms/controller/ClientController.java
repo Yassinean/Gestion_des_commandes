@@ -4,13 +4,18 @@ import org.thymeleaf.context.WebContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.thymeleaf.ITemplateEngine;
 import com.huongdanjava.jakartaee.servlet.ThymeleafConfig;
+import com.oms.model.AdminType;
 import com.oms.model.Client;
 import com.oms.service.UserService;
 
@@ -89,6 +94,14 @@ public class ClientController extends HttpServlet {
 
     private void listClients(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+    	
+    	  HttpSession session = request.getSession();
+          String userType = (String) session.getAttribute("userType");
+
+          if (!"Admin".equals(userType) ) {
+              response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied.");
+              return; 
+          }
     	int currentPage = 1;
     	int pageSize = 6;
     	
@@ -149,33 +162,44 @@ public class ClientController extends HttpServlet {
         }
     }
     
-    private void updateClient(HttpServletRequest request , HttpServletResponse response)
-    	    throws ServletException , IOException {
-    	    	int clientId = Integer.parseInt(request.getParameter("clientUpdate"));
-    	    	String nom = request.getParameter("nom");
-    	        String prenom = request.getParameter("prenom");
-    	        String email = request.getParameter("email");
-    	        String motDePasse = request.getParameter("password");
-    	        String adresse = request.getParameter("adresse");
-    	        double moyen = Double.parseDouble(request.getParameter("moyen"));
-    	        
-    	        Client client = new Client();
-    	        client.setId(clientId);
-    	        client.setNom(nom);
-    	        client.setPrenom(prenom);
-    	        client.setEmail(email);
-    	        client.setMotDePasse(motDePasse);
-    	        client.setAdresse(adresse);
-    	        client.setMoyenPaiment(moyen);
-    	        
-    	        boolean isUpdated = userService.updateClient(client);
-    	        
-    	        if (isUpdated) {
-    	            response.sendRedirect("client");
-    	        } else {
-    	            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"Failed to update Client.");
-    	        }
-    	    }
+    private void updateClient(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int clientId = Integer.parseInt(request.getParameter("clientUpdate"));
+        String nom = request.getParameter("nom");
+        String prenom = request.getParameter("prenom");
+        String email = request.getParameter("email");
+        String motDePasse = request.getParameter("password");
+        String adresse = request.getParameter("adresse");
+        double moyen = Double.parseDouble(request.getParameter("moyen"));
+
+        Optional<Client> existingClientOptional = userService.getClientById(clientId);
+
+        if (!existingClientOptional.isPresent()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Client not found.");
+            return;
+        }
+
+        Client existingClient = existingClientOptional.get();
+
+        existingClient.setNom(nom);
+        existingClient.setPrenom(prenom);
+        existingClient.setEmail(email);
+
+        if (motDePasse != null && !motDePasse.isEmpty()) {
+            existingClient.setMotDePasse(motDePasse);
+        }
+
+        existingClient.setAdresse(adresse);
+        existingClient.setMoyenPaiment(moyen);
+
+        boolean isUpdated = userService.updateClient(existingClient);
+
+        if (isUpdated) {
+            response.sendRedirect("client");
+        } else {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update Client.");
+        }
+    }
 
     
     private void deleteClient(HttpServletRequest request, HttpServletResponse response)
