@@ -32,7 +32,7 @@ public class ProductController extends HttpServlet {
 	        String action = request.getParameter("action");
 	        if (action == null) action = "list";
 
-	        HttpSession session = request.getSession(false);
+	        HttpSession session = request.getSession(true);
 	        String userType = (String) session.getAttribute("userType");
 
 	        switch (action) {
