@@ -9,6 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +32,9 @@ public class ProductController extends HttpServlet {
 	        String action = request.getParameter("action");
 	        if (action == null) action = "list";
 
+	        HttpSession session = request.getSession(true);
+	        String userType = (String) session.getAttribute("userType");
+
 	        switch (action) {
 	            case "list":
 	                listProducts(request, response);
@@ -38,8 +43,12 @@ public class ProductController extends HttpServlet {
 	                searchProducts(request, response);
 	                break;
 	            case "delete":
-	                deleteProduct(request, response);
-	                break;
+	            	 if ("admin".equalsIgnoreCase(userType)) {
+	                     deleteProduct(request, response);
+	                 } else {
+	                     handleUnauthorizedAccess(request, response);
+	                 }
+	            	 break;
 	            default:
 	                response.sendRedirect("products?action=list");
 	        }
@@ -77,7 +86,11 @@ public class ProductController extends HttpServlet {
     	    } else {
     	        products = productService.listProducts(1, totalProducts);
     	    }
+    	   
+    	    HttpSession session = request.getSession(false);
+    	    String userType = (String) session.getAttribute("userType");
 
+    	    request.setAttribute("userType", userType);
     	    request.setAttribute("products", products);
     	    request.setAttribute("paginationNeeded", paginationNeeded);
     	    request.setAttribute("currentPage", page);
@@ -141,6 +154,12 @@ public class ProductController extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         productService.deleteProduct(id);
         request.getSession().setAttribute("message", "Product deleted successfully !");
+        response.sendRedirect("products?action=list");
+    }
+    
+    private void handleUnauthorizedAccess(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException {
+        request.getSession().setAttribute("errorMessage", "You are not authorized to perform this action.");
         response.sendRedirect("products?action=list");
     }
 }
