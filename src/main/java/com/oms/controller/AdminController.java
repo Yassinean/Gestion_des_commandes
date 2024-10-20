@@ -190,9 +190,9 @@ public class AdminController extends HttpServlet {
         admin.setEmail(email);
         
         if (motDePasse != null && !motDePasse.isEmpty()) {
-            admin.setMotDePasse(motDePasse); // This will hash the new password
+            admin.setMotDePasse(motDePasse); 
         } else {
-            admin.setMotDePasse(existingAdmin.getMotDePasse()); // Keep the old password
+            admin.setMotDePasse(existingAdmin.getMotDePasse());
         }
         
         admin.setAdminType(adminType2); 

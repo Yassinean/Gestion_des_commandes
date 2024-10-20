@@ -4,6 +4,8 @@ import org.thymeleaf.context.WebContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -159,11 +161,25 @@ public class ClientController extends HttpServlet {
     	        String adresse = request.getParameter("adresse");
     	        double moyen = Double.parseDouble(request.getParameter("moyen"));
     	        
+    	        Optional<Client> existingClientOptional = userService.getClientById(clientId);
+    	        
+    	        if (!existingClientOptional.isPresent()) {
+    	            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Client not found.");
+    	            return;
+    	        }
+    	        
+    	        Client existingClient = existingClientOptional.get();
+    	        
     	        Client client = new Client();
     	        client.setId(clientId);
     	        client.setNom(nom);
     	        client.setPrenom(prenom);
     	        client.setEmail(email);
+    	        if (motDePasse != null && !motDePasse.isEmpty()) {
+    	            client.setMotDePasse(motDePasse); 
+    	        } else {
+    	            client.setMotDePasse(existingClient.getMotDePasse());
+    	        }
     	        client.setMotDePasse(motDePasse);
     	        client.setAdresse(adresse);
     	        client.setMoyenPaiment(moyen);
