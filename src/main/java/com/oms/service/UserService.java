@@ -14,6 +14,9 @@ public class UserService {
     public UserService() {
         this.userDAO = new UserDAOImpl(); 
     }
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     public boolean createClient(Client client) {
         return userDAO.createClient(client);
