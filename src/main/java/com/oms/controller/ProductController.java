@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.lang.System.Logger;
 import java.util.List;
 
 public class ProductController extends HttpServlet {
@@ -64,11 +65,22 @@ public class ProductController extends HttpServlet {
             insertProduct(request, response);
         } else if ("update".equals(action)) {
             updateProduct(request, response);
+        }else if("fav".equals(action)) {
+        	favoris(request, response);
         }
     }
 
-   
-
+    public void favoris(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int productId = Integer.parseInt(request.getParameter("id"));
+        System.out.println("this is id: "+productId);
+        Product product = productService.findProduct(productId);
+        product.setFavoris(product.getFavoris() + 1);
+        productService.updateProduct(productId,product);
+        listProducts(request, response);
+        
+    }
+    
     private void listProducts(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     	  int page = 1;
@@ -169,4 +181,7 @@ public class ProductController extends HttpServlet {
         request.getSession().setAttribute("errorMessage", "You are not authorized to perform this action.");
         response.sendRedirect("products?action=list");
     }
+    
+    
+  
 }

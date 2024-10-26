@@ -15,4 +15,5 @@ public interface ProductDAO {
 	List<Product> searchProducts(String name);
 	int getTotalProductCount();
 	List<Product> listProductsSortedByPrice();
+	
 }

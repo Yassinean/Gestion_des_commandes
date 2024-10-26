@@ -44,6 +44,10 @@ public class ProductService{
         return productDAO.getTotalProductCount();
     }
     
+//    public int getCountFav(int id) {
+//        return productDAO.favProduct(id);
+//    }
+    
     public List<Product> listProductsSortedByPrice() {
         return productDAO.listProducts(1, getTotalProductCount())
                          .stream()

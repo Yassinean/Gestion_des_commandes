@@ -153,4 +153,7 @@ Pour exécuter les tests, utilisez :
 mvn test
 ```
 
-
+## Equipe 
+Salah Eddine Akil
+Yassine Hanach
+Zakaria Loulida

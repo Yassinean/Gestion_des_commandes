@@ -36,6 +36,9 @@ public class Product {
     @Min(value = 0, message = "Stock cannot be negative")
     @Column(nullable = false)
     private Integer stock;
+    
+    @Column(nullable = false)
+    private Integer favoris;
 
 
     
@@ -105,6 +108,15 @@ public class Product {
 
 	public void setStock(Integer stock) {
 		this.stock = stock;
+	}
+
+	public int getFavoris() {
+		return favoris;
+	}
+
+
+	public void setFavoris(int favoris) {
+		this.favoris = favoris;
 	}
 
 

@@ -44,6 +44,13 @@
 		    <div th:each="product : ${products}" class="flex flex-col bg-white rounded-lg shadow-md overflow-hidden">
 		        <div class="relative">
 		            <img src="https://images.pexels.com/photos/4381392/pexels-photo-4381392.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="Product Image" class="w-full h-48 object-cover" />
+		            <div>
+		            	<form th:action="@{/products?action=fav}" method="post">
+		            		<input type="hidden" th:value="${product.id}" name="id">
+		            		<button type="submit" class="bg-yellow-800">FAV</button>
+		            	</form>
+	            		<span th:text="'fav ' + ${product.favoris}"></span>
+		            </div>
 		            <div class="absolute top-2 right-2 bg-pink-500 text-white text-xs px-2 py-1 rounded">
 		                <span th:text="'Stock: ' + ${product.stock}">Stock: 0</span>
 		            </div>

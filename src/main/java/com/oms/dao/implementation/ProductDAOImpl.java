@@ -50,6 +50,7 @@ public class ProductDAOImpl implements ProductDAO {
 				existProduct.setDescription(product.getDescription());
 				existProduct.setPrice(product.getPrice());
 				existProduct.setStock(product.getStock());
+				existProduct.setFavoris(product.getFavoris());
 				em.merge(existProduct);
 			}
 			et.commit();
@@ -83,8 +84,7 @@ public class ProductDAOImpl implements ProductDAO {
 			 LOGGER.log(Level.SEVERE, "Error deleting product", e);
 		}finally {
 			em.close();
-		}
-		
+		}	
 	}
 
 	@Override
@@ -151,6 +151,7 @@ public class ProductDAOImpl implements ProductDAO {
 	    }
 	    return count;
 	}
+	
 	
 	@Override
 	public List<Product> listProductsSortedByPrice() {
