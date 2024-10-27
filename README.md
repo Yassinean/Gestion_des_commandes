@@ -154,6 +154,6 @@ mvn test
 ```
 
 ## Equipe 
-Salah Eddine Akil
-Yassine Hanach
-Zakaria Loulida
+#### Salah Eddine Akil
+#### Yassine Hanach
+#### Zakaria Loulida
